@@ -1,0 +1,69 @@
+openapi: "3.0.2"
+info:
+  title: tf_caseQuery_caseSubjectQuery_caseUpdate
+  version: "1.0"
+servers:
+  - url: https://ocioplatform--regulatory.sandbox.my.salesforce.com/services/apexrest
+
+components:
+  securitySchemes:
+    Bearer-Auth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+paths:
+  /port-services/casequery/tf:
+    post:
+      summary: get recent cases ID within 10mins
+      security:
+        - Bearer-Auth: []
+
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                  response:
+                    type: array
+                    items:
+                      type: string
+
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errorCode:
+                    type: string
+
+  /port-services/casesubjectquery/tf:
+    post:
+      responses:
+        "200":
+          description: OK
+
+  /port-services/caseupdate/tf:
+    patch:
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
