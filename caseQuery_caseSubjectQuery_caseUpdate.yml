@@ -3,7 +3,7 @@ info:
   title: tf_caseQuery_caseSubjectQuery_caseUpdate
   version: "1.0"
 servers:
-  - url: https://ocioplatform--regulatory.sandbox.my.salesforce.com/services/apexrest
+  - url: https://ocioplatform--regulatory.sandbox.my.salesforce.com
 
 components:
   securitySchemes:
@@ -12,14 +12,265 @@ components:
       scheme: bearer
       bearerFormat: JWT
 
+  schemas:
+    # global schema
+    UnauthorizedResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Session expired or invalid
+        errorCode:
+          type: string
+          example: INVALID_SESSION_ID
+    # case query
+    # end case query
+
+    # case subject query
+    # 2
+    # RESPONSE
+    # case update schemas
+    # parent
+
+    # end point take from /sevices
+    caseQuerySuccessResponse:
+      description: When a list of Ids was NOT specified
+      type: object
+      properties:
+        statusCode:
+          type: string
+        message:
+          type: string
+        ids:
+          type: array
+          items:
+            type: string
+
+    caseSubjectQueryResponse:
+      description: When a list of Ids was specified
+      type: object
+      properties:
+        statusCode:
+          type: string
+        message:
+          type: string
+        invalidIds:
+          type: array
+          items:
+            type: string
+        response:
+          type: array
+          items:
+            $ref: "#/components/schemas/caseSubjectQuerySchema"
+
+    # 1st child
+    caseSubjectQuerySchema:
+      type: object
+      properties:
+        CaseId:
+          type: string
+        ReporterType:
+          type: string
+        Type:
+          type: string
+        SFOriginalCaseId:
+          type: string
+        CSCaseId:
+          type: string
+        CSOriginalCaseId:
+          type: string
+        URLSalesforceCase:
+          type: string
+        ReporterName:
+          type: string
+        ReporterEmail:
+          type: string
+        ReportereBayMemberId:
+          type: string
+        PageURL:
+          type: string
+        CaseSubjectIds:
+          type: array
+          items:
+            $ref: "#/components/schemas/caseSubjectIdSchema"
+        CaseSubjects:
+          type: array
+          items:
+            $ref: "#/components/schemas/caseSubjectSchema"
+    # grand child 1st
+    caseSubjectIdSchema:
+      type: object
+      properties:
+        Id:
+          type: string
+
+    # gradn child 2nd
+    caseSubjectSchema:
+      type: object
+      properties:
+        CaseSubject:
+          type: object
+          properties:
+            Issue_URL__c:
+              type: string
+            TR_Portal__c:
+              type: string
+            Original_Case_Subject__c:
+              type: string
+            Id:
+              type: string
+            Case__c:
+              type: string
+            attributes:
+              type: object
+              properties:
+                url:
+                  type: string
+                type:
+                  type: string
+
+    caseSubjectInvalidIdSchema:
+      type: object
+      properties:
+        invalidIds:
+          type: array
+          items:
+            type: string
+
+    #       "invalidIds": [
+    #     "500D800000MGsqqIAD"
+    # ],
+
+    # end case subject query
+
+    # case update
+    # 3
+    # REQUEST
+    # case update request
+    caseupdateRequestBody:
+      type: object
+      properties:
+        CaseSubjectIds:
+          type: string
+          example: a0YD7000004ER3WMAW
+        CSCaseId:
+          type: string
+          example: 2002
+        Action Id:
+          type: string
+        Action Description:
+          type: string
+        Policy Id:
+          type: string
+        Policy Description:
+          type: string
+        Content ID:
+          type: string
+
 paths:
-  /port-services/casequery/tf:
+  /services/apexrest/port-services/casequery/tf:
     post:
       summary: get recent cases ID within 10mins
       security:
         - Bearer-Auth: []
+      requestBody:
+        description: Return a list of salesforce case record id
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - type: object
+                  example:
+                - type: object
+                  description: List of salesforce case record id
+                  properties:
+                    ids:
+                      type: array
+                      items:
+                        type: string
+                  required:
+                    - "ids"
+                  example:
+                    ids:
+                      - 500D700000MGsqqIAD
+                      - 500D800000MGsqqIAD
+            examples:
+              without id:
+                value:
+              with id:
+                value: { ids: [500D700000MGsqqIAD, 500D800000MGsqqIAD] }
 
       responses:
+        "200":
+          description: List of case id specifying in the request
+          content:
+            application/json:
+              examples:
+                without id response:
+                  value: { statusCode: string, message: string, ids: [string] }
+                with id response:
+                  value:
+                    {
+                      statusCode: string,
+                      message: string,
+                      invalidIds: [string],
+                      response:
+                        [
+                          {
+                            CaseId: string,
+                            ReporterType: string,
+                            Type: string,
+                            SFOriginalCaseId: string,
+                            CSCaseId: string,
+                            CSOriginalCaseId: string,
+                            URLSalesforceCase: string,
+                            ReporterName: string,
+                            ReporterEmail: string,
+                            ReportereBayMemberId: string,
+                            PageURL: string,
+                            CaseSubjectIds: [{ Id: string }],
+                            CaseSubjects:
+                              [
+                                {
+                                  CaseSubject:
+                                    {
+                                      Issue_URL__c: string,
+                                      TR_Portal__c: string,
+                                      Original_Case_Subject__c: string,
+                                      Id: string,
+                                      Case__c: string,
+                                      attributes: { url: string, type: string },
+                                    },
+                                },
+                              ],
+                          },
+                        ],
+                    }
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/caseSubjectQueryResponse"
+                  - $ref: "#/components/schemas/caseQuerySuccessResponse"
+
+  /services/apexrest/port-services/caseupdate/tf:
+    patch:
+      summary: enpoint for case subject update
+      security:
+        - Bearer-Auth: []
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/caseupdateRequestBody"
+
+      responses:
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+
         "200":
           description: OK
           content:
@@ -28,42 +279,20 @@ paths:
                 type: object
                 properties:
                   statusCode:
-                    type: integer
-                    format: int32
+                    type: number
                     example: 200
                   message:
-                    type: string
-                  response:
-                    type: array
-                    items:
-                      type: string
-
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  errorCode:
-                    type: string
-
-  /port-services/casesubjectquery/tf:
-    post:
-      responses:
-        "200":
-          description: OK
-
-  /port-services/caseupdate/tf:
-    patch:
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
+                    type: object
+                    properties:
+                      Success:
+                        type: object
+                        properties:
+                          CaseSubjectIds:
+                            type: array
+                            items:
+                              type: string
+                              example: a0YD7000004ER3WMAW
+                          TR_Portal_Values:
+                            type: object
+                      Failed:
+                        type: object
