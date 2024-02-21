@@ -1,6 +1,6 @@
 openapi: "3.0.2"
 info:
-  title: tf_caseQuery_caseSubjectQuery_caseUpdate
+  title: TF Inbound Salesforce API
   version: "1.0"
 servers:
   - url: https://ocioplatform--regulatory.sandbox.my.salesforce.com
@@ -25,7 +25,10 @@ components:
           example: INVALID_SESSION_ID
     # case query
     # end case query
-    caseQuerySubjectRequestBody:
+
+    # without Ids filter
+    # with Ids filter
+    Witout Ids Filter RequestBody:
       type: object
       description: List of salesforce case record id
       properties:
@@ -146,6 +149,7 @@ components:
       properties:
         CaseSubjectIds:
           type: string
+          description: this is case subject
         CSCaseId:
           type: string
         Action Id:
@@ -194,11 +198,11 @@ paths:
               oneOf:
                 - type: object
                   example: {}
-                - $ref: "#/components/schemas/caseQuerySubjectRequestBody"
+                - $ref: "#/components/schemas/Witout Ids Filter RequestBody"
             examples:
-              without subject: {}
+              Without subject: {}
               with subject:
-                value: { ids: [500D700000MGsqqIAD, 500D800000MGsqqIAD] }
+                value: { ids: [string, string] }
 
       responses:
         "400":
@@ -226,9 +230,9 @@ paths:
           content:
             application/json:
               examples:
-                without id response:
+                Without Ids filter in request:
                   value: { statusCode: string, message: string, ids: [string] }
-                with id response:
+                With Ids filter in request:
                   value:
                     {
                       statusCode: string,
@@ -271,9 +275,19 @@ paths:
                   - $ref: "#/components/schemas/caseSubjectQuerySuccessResponse"
                   - $ref: "#/components/schemas/caseQuerySuccessResponse"
 
+  /services/apexrest/port-services/casesubjectquery/tf:
+    post:
+      summary: Get detail about each case including document
+      security:
+        - Bearer-Auth: []
+
+      responses:
+        "200":
+          description: OK
+
   /services/apexrest/port-services/caseupdate/tf:
     patch:
-      summary: enpoint for case subject update
+      summary: Update report items in Trusted Flagger
       security:
         - Bearer-Auth: []
 
@@ -281,7 +295,12 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/caseUpdateRequestBody"
+              type: object
+              properties:
+                Case:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/caseUpdateRequestBody"
 
       responses:
         "400":
