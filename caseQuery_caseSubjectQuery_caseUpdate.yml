@@ -63,7 +63,7 @@ components:
           items:
             type: string
 
-    caseSubjectQuerySuccessResponse:
+    caseQueryIdsSuccessResponse:
       description: When a list of Ids was specified
       type: object
       properties:
@@ -78,10 +78,10 @@ components:
         response:
           type: array
           items:
-            $ref: "#/components/schemas/caseSubjectQuerySchema"
+            $ref: "#/components/schemas/caseQueryIdsSchema"
 
     # 1st child
-    caseSubjectQuerySchema:
+    caseQueryIdsSchema:
       type: object
       properties:
         CaseId:
@@ -183,11 +183,20 @@ components:
                   example: { string: Trusted Flagger }
             Failed:
               type: object
+              properties:
+                CaseSubjectIds:
+                  type: array
+                  items:
+                    type: string
+                errors:
+                  type: array
+                  items:
+                    type: string
 
 paths:
   /services/apexrest/port-services/casequery/tf:
     post:
-      summary: get recent cases ID within 10mins
+      summary: Get recent cases ID within 10mins
       security:
         - Bearer-Auth: []
       requestBody:
@@ -197,11 +206,11 @@ paths:
             schema:
               oneOf:
                 - type: object
-                  example: {}
+                  additionalProperties: false
                 - $ref: "#/components/schemas/Witout Ids Filter RequestBody"
             examples:
-              Without subject: {}
-              with subject:
+              Witout Ids Filter: {}
+              With Ids Filter:
                 value: { ids: [string, string] }
 
       responses:
@@ -272,7 +281,7 @@ paths:
                     }
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/caseSubjectQuerySuccessResponse"
+                  - $ref: "#/components/schemas/caseQueryIdsSuccessResponse"
                   - $ref: "#/components/schemas/caseQuerySuccessResponse"
 
   /services/apexrest/port-services/casesubjectquery/tf:
