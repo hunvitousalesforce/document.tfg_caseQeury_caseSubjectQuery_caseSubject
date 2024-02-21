@@ -176,7 +176,7 @@ components:
                     type: string
                 TR_Portal_Values:
                   type: object
-                  example: { a0YD7000004ER3WMAW: Trusted Flagger }
+                  example: { string: Trusted Flagger }
             Failed:
               type: object
 
@@ -201,6 +201,20 @@ paths:
                 value: { ids: [500D700000MGsqqIAD, 500D800000MGsqqIAD] }
 
       responses:
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invalid ids
+                  invalidIds:
+                    type: array
+                    items:
+                      type: string
         "401":
           description: Unauthorized
           content:
@@ -270,6 +284,16 @@ paths:
               $ref: "#/components/schemas/caseUpdateRequestBody"
 
       responses:
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The Case with Id 'a0YD7000004ER3WMA' is not a valid record type of 'Trusted Flagger Request'
         "401":
           description: Unauthorized
           content:
