@@ -14,7 +14,7 @@ components:
 
   schemas:
     # global schema
-    UnauthorizedResponse:
+    Unauthorized Response:
       type: object
       properties:
         message:
@@ -289,7 +289,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UnauthorizedResponse"
+                $ref: "#/components/schemas/Unauthorized Response"
         "200":
           description: List of case id specifying in the request
           content:
@@ -374,7 +374,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UnauthorizedResponse"
+                $ref: "#/components/schemas/Unauthorized Response"
 
   /services/apexrest/port-services/caseupdate/tf:
     patch:
@@ -409,7 +409,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UnauthorizedResponse"
+                $ref: "#/components/schemas/Unauthorized Response"
 
         "200":
           description: OK
