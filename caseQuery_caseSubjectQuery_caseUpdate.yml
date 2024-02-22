@@ -28,7 +28,7 @@ components:
 
     # without Ids filter
     # with Ids filter
-    Witout Ids Filter RequestBody:
+    With Ids Filter RequestBody:
       type: object
       description: List of salesforce case record id
       properties:
@@ -38,10 +38,7 @@ components:
             type: string
       required:
         - "ids"
-      example:
-        ids:
-          - 500D700000MGsqqIAD
-          - 500D800000MGsqqIAD
+
     # case subject query
     # 2
     # RESPONSE
@@ -193,6 +190,65 @@ components:
                   items:
                     type: string
 
+    caseSubjectQuerySuccessResponse:
+      type: object
+      properties:
+        statusCode:
+          type: string
+        message:
+          type: string
+        invalidIds:
+          type: array
+          items:
+            type: string
+        response:
+          type: array
+          items:
+            $ref: "#/components/schemas/caseSubjectQueryItemResponse"
+
+    caseSubjectQueryItemResponse:
+      type: object
+      properties:
+        CaseSubjectId:
+          type: string
+        SFOriginalCaseId:
+          type: string
+        CSCaseId:
+          type: string
+        CSOrginalCaseId:
+          type: string
+        ReportType:
+          type: string
+        ContentId:
+          type: string
+        TRPortal:
+          type: string
+        PageURL:
+          type: string
+        ReasonCode:
+          type: string
+        URLSalesforceCase:
+          type: string
+        IssueSummary:
+          type: string
+        eBayItemNumber:
+          type: string
+        MessageToeBay:
+          type: string
+        MessageToSeller:
+          type: string
+        MessageToBuyer:
+          type: string
+        Name1:
+          type: string
+        Name2:
+          type: string
+        Documents:
+          type: array
+          example: []
+        OrginalDocuments:
+          type: array
+          example: []
 paths:
   /services/apexrest/port-services/casequery/tf:
     post:
@@ -207,7 +263,7 @@ paths:
               oneOf:
                 - type: object
                   additionalProperties: false
-                - $ref: "#/components/schemas/Witout Ids Filter RequestBody"
+                - $ref: "#/components/schemas/With Ids Filter RequestBody"
             examples:
               Witout Ids Filter: {}
               With Ids Filter:
@@ -289,10 +345,36 @@ paths:
       summary: Get detail about each case including document
       security:
         - Bearer-Auth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/With Ids Filter RequestBody"
 
       responses:
         "200":
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/caseSubjectQuerySuccessResponse"
+
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Empty or invalid request body
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
 
   /services/apexrest/port-services/caseupdate/tf:
     patch:
