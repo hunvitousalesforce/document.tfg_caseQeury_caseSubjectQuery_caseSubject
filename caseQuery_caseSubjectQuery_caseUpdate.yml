@@ -5,6 +5,9 @@ info:
 servers:
   - url: https://ocioplatform--regulatory.sandbox.my.salesforce.com
 
+tags:
+  - name: TF PORT Inbound Subscriber
+
 components:
   securitySchemes:
     Bearer-Auth:
@@ -252,6 +255,8 @@ components:
 paths:
   /services/apexrest/port-services/casequery/tf:
     post:
+      tags:
+        - TF PORT Inbound Subscriber
       summary: Get recent cases ID within 10mins
       security:
         - Bearer-Auth: []
@@ -342,6 +347,8 @@ paths:
 
   /services/apexrest/port-services/casesubjectquery/tf:
     post:
+      tags:
+        - TF PORT Inbound Subscriber
       summary: Get detail about each case including document
       security:
         - Bearer-Auth: []
@@ -378,10 +385,11 @@ paths:
 
   /services/apexrest/port-services/caseupdate/tf:
     patch:
+      tags:
+        - TF PORT Inbound Subscriber
       summary: Update report items in Trusted Flagger
       security:
         - Bearer-Auth: []
-
       requestBody:
         content:
           application/json:
