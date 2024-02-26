@@ -1,0 +1,14 @@
+services:
+  TF_Inbound_api:
+    image: swaggerapi/swagger-ui
+    restart: always
+    container_name: TF_Inbound_api
+    environment:
+      - SWAGGER_JSON=/tf_api_docs/tf_inbound_api.doc.yaml
+    ports:
+      - 5000:8080
+    volumes:
+      - /Users/user/Documents/hunvitou/projects/tf_api_docs:/tf_api_docs
+
+volumes:
+  tf_inbound_api_data:

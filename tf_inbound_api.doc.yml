@@ -2,6 +2,7 @@ openapi: "3.0.2"
 info:
   title: TF Inbound Salesforce API
   version: "1.0"
+  description: Everythings about case query, case subject query, and case update of TF
 servers:
   - url: https://ocioplatform--regulatory.sandbox.my.salesforce.com
 
@@ -147,9 +148,9 @@ components:
     caseUpdateRequestBody:
       type: object
       properties:
-        CaseSubjectIds:
+        CaseSubjectId:
           type: string
-          description: this is case subject
+          description: This is salesforce case subject id.
         CSCaseId:
           type: string
         Action Id:
@@ -180,7 +181,10 @@ components:
                     type: string
                 TR_Portal_Values:
                   type: object
-                  example: { string: Trusted Flagger }
+                  properties:
+                    string:
+                      type: string
+                  example: { Case Subject Id: Trusted Flagger }
             Failed:
               type: object
               properties:
@@ -248,10 +252,14 @@ components:
           type: string
         Documents:
           type: array
-          example: []
+          items:
+            type: string
+            description: (List of document ids of case subject)
         OrginalDocuments:
           type: array
-          example: []
+          items:
+            type: string
+            description: (List of orginal document ids of orginal case subject)
 paths:
   /services/apexrest/port-services/casequery/tf:
     post:
@@ -261,7 +269,7 @@ paths:
       security:
         - Bearer-Auth: []
       requestBody:
-        description: Return a list of salesforce case record id
+        description: Return a list of salesforce case record ids
         content:
           application/json:
             schema:
@@ -296,7 +304,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Unauthorized Response"
         "200":
-          description: List of case id specifying in the request
+          description: Successfull Request
           content:
             application/json:
               examples:
@@ -360,7 +368,7 @@ paths:
 
       responses:
         "200":
-          description: OK
+          description: Successfull Request
           content:
             application/json:
               schema:
@@ -420,7 +428,7 @@ paths:
                 $ref: "#/components/schemas/Unauthorized Response"
 
         "200":
-          description: OK
+          description: Successfull Request
           content:
             application/json:
               schema:
